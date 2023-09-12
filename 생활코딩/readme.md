@@ -205,3 +205,101 @@ console.log(result);
 - 향상된 성능: 서버 컴포넌트는 클라이언트로 JavaScript 코드를 전송하지 않습니다.
 
   이는 전송되는 데이터의 양을 줄이고, 클라이언트의 부하를 줄임으로써 웹사이트의 전반적인 성능을 향상시키는데 도움이 됩니다.
+
+# 생성 기능
+
+## server component -> client component
+
+```js
+"use client";
+```
+
+위의 코드를 사용하면 client component로 전환됩니다.
+
+클라이언트 컴포넌트가 되면 useEffect, useState, onSubmit과 같은 코드를 사용할 수 있게 됩니다.
+
+## 라우터
+
+```js
+import { useRouter } from "next/navigation";
+const router = useRouter();
+
+router.push(`/read/${topic.id}`);
+router.refresh();
+```
+
+- useRouter를 사용하면 라우터 객체를 생성할 수 있습니다. useRouter는 client component에서만 사용 가능합니다.
+
+- router.push를 사용하면 페이지 리로드 없이 사용자의 화면을 해당 페이지로 이동합니다.
+
+- router.refresh를 사용하면 서버 컴포넌트를 서버 쪽에서 다시 랜더링해서 새로 고침할 수 있습니다.
+
+## cache 업데이트
+
+- router.refresh를 했음에도 글 목록이 갱신되지 않을 것입니다.
+
+  그 이유는 서버쪽에서 fetch를 사용하면 응답 결과를 저장하기 때문입니다.
+
+  개발 서버를 다시 시작하고, 페이지를 리로드한 후에 터미널을 봅시다.
+
+- cache : MISS는 캐쉬가 없기 때문에 서버에 실제로 접속해서 데이터를 가져왔다는 뜻입니다.
+
+- cache : HIT 입니다. 캐쉬를 사용했다는 뜻입니다.
+
+- 캐쉬를 삭제한 후에 router.refresh를 하면 됩니다만, 그건 수업의 범위를 벗어나기 때문에 fetch를 하는 단계에서 캐쉬를 사용하지 않는 방법을 보여드리겠습니다.
+
+  자세한 내용은 [revalidate](https://nextjs.org/docs/app/building-your-application/data-fetching/revalidating)를 확인해주세요.
+
+```js
+const resp = await fetch("http://localhost:9999/topics/", {
+  cache: "no-store",
+});
+```
+
+- `{cache: 'no-store'}`를 추가하면 캐쉬를 사용하지 않게 됩니다.
+
+  이제 layout.js의 fetch는 랜더링 될 때마다 캐쉬를 사용하지 않고 신선한 데이터를 가져오게 되었습니다.
+
+# Control 컴포넌트
+
+- server component 내에서는 현재 동적 라우팅의 값(`[id]`)을 layout 안에서는 알 수 없습니다.
+
+  useParams를 사용해야 하는데 useParams는 client component입니다.
+
+  app/layout.js 전체를 client component로 전환해도 됩니다만, server component의 이점을 포기하기는 싫기 때문에 여기서는 client component의 기능이 필요한 부분만 별도의 컴포넌트로 분리했습니다.
+
+# Update 기능
+
+- 수정 기능은 read + create 기능을 합친 것과 같습니다.
+
+- read 페이지 캐슁 끄기
+
+  수정을 한 후에 `/read/[id]`로 접속을 하면 내용이 갱신되지 않습니다. 여기서는 캐쉬 기능을 끄겠습니다.
+
+# Delete 기능
+
+```js
+<input
+  type="button"
+  value="delete"
+  onClick={() => {
+    const options = { method: "DELETE" };
+    fetch("http://localhost:9999/topics/" + id, options)
+      .then((resp) => resp.json())
+      .then((result) => {
+        router.push("/");
+        router.refresh();
+      });
+  }}
+/>
+```
+
+# 환경 변수
+
+- 코드에 포함시킬 수 없는 정보는 환경변수의 형태로 관리하는 것이 좋습니다.
+
+1. `.env.local` 파일 생성
+
+`NEXT_PUBLIC_` 접두사가 없으면 server component에서만 사용할 수 있고, client component에서는 사용할 수 없습니다. 이는 DB_PASSWORD와 같은 비밀정보를 보호하기 위한 안전장치입니다.
+
+2. 환경변수는 process.env.변수명을 이용해서 가져올 수 있습니다.
