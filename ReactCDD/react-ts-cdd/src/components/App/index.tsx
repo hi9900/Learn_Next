@@ -1,7 +1,6 @@
-import React from "react";
-import logo from "./logo.svg";
-import styled from "@emotion/styled";
-import { keyframes } from "@emotion/react";
+import logo from './logo.svg';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 
 const Container = styled.div`
   text-align: center;
@@ -45,12 +44,7 @@ export default function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <AppLink
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <AppLink className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
           Learn React
         </AppLink>
       </Header>
