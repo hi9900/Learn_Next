@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import DataView from 'components/Todo/DataView';
 import InputContainer from 'components/Todo/InputContainer';
-import { useState } from 'react';
+import { ToDoListContextProvider } from 'contexts/ToDoList';
 
 const Container = styled.div`
   height: 100vh;
@@ -13,19 +13,12 @@ const Container = styled.div`
 `;
 
 export default function Todo() {
-  const [toDoList, setToDoList] = useState(['리액트', '넥스트', '프로젝트']);
-
-  const onDelete = (todo: string) => {
-    setToDoList(toDoList.filter((item) => item !== todo));
-  };
-  const onAdd = (toDo: string) => {
-    setToDoList([...toDoList, toDo]);
-  };
-
   return (
     <Container>
-      <DataView toDoList={toDoList} onDelete={onDelete} />
-      <InputContainer onAdd={onAdd} />
+      <ToDoListContextProvider>
+        <DataView />
+        <InputContainer />
+      </ToDoListContextProvider>
     </Container>
   );
 }

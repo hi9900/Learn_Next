@@ -16,11 +16,11 @@ interface Props {
   readonly onDelete?: (todo: string) => void;
 }
 
-export default function DataView({ toDoList, onDelete }: Props) {
+export default function DataView() {
   return (
     <Container>
       <Title label="할 일 목록" />
-      <TodoList toDoList={toDoList} onDelete={onDelete} />
+      <TodoList />
     </Container>
   );
 }
