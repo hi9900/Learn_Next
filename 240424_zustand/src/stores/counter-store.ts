@@ -1,7 +1,7 @@
 import { create, StateCreator } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-const enum counterActions {
+const enum CounterActions {
   INCREASE = 'counter/increase',
   DECREASE = 'counter/decrease',
 }
@@ -20,13 +20,13 @@ const counterStore: StateCreator<CountState, [['zustand/devtools', never]]> = (
     set(
       (state) => ({ count: state.count + 1 }),
       false,
-      counterActions.INCREASE,
+      CounterActions.INCREASE,
     ),
   decreaseCount: () =>
     set(
       (state) => ({ count: state.count - 1 }),
       false,
-      counterActions.DECREASE,
+      CounterActions.DECREASE,
     ),
 })
 

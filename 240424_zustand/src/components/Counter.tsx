@@ -1,6 +1,6 @@
 'use client'
 
-import useCounter from '@/store/store'
+import useCounter from '@/stores/counter-store'
 
 export default function Counter() {
   const count = useCounter((state) => state.count)
