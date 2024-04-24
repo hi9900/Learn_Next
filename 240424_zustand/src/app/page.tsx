@@ -1,7 +1,10 @@
+import Counter from '@/components/Counter'
+
 export default function Home() {
   return (
     <main>
-      <h1>test</h1>
+      <h1>Counter</h1>
+      <Counter />
     </main>
   )
 }
